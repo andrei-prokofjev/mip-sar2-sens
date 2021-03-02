@@ -29,7 +29,7 @@ interface AppComponent {
     companion object {
         fun create(app: Application): AppComponent =
             DaggerAppComponent.builder()
-
+                .appModule(AppModule(app))
                 .build()
     }
 }

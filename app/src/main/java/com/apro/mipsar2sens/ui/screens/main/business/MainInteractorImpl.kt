@@ -13,7 +13,6 @@ class MainInteractorImpl @Inject constructor(
     private var scope: CoroutineScope? = null
 
     override fun init() {
-        reset()
         scope = CoroutineScope(Dispatchers.IO)
         mainRepository.init()
     }

@@ -6,4 +6,5 @@ interface UsbBroadcastReceiver {
 
    fun reset()
    fun deviceConnectivityState(): StateFlow<Boolean>
+   fun init()
 }

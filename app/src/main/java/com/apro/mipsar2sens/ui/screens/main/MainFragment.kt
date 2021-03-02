@@ -22,6 +22,8 @@ class MainFragment : BaseFragment(R.layout.fragment_main), BackButtonListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel
+
     }
 
     override fun onBackPressed(): Boolean {

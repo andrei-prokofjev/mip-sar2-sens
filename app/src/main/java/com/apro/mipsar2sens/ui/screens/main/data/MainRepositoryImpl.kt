@@ -3,13 +3,10 @@ package com.apro.mipsar2sens.ui.screens.main.data
 import android.app.Application
 import com.ftdi.j2xx.D2xxManager
 import com.ftdi.j2xx.D2xxManager.FtDeviceInfoListNode
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -20,18 +17,17 @@ class MainRepositoryImpl @Inject constructor(
 ) : MainRepository {
 
 
-
     private val _appState = MutableStateFlow(AppState.Idle)
 
     private var scope: CoroutineScope? = null
 
-    override fun init() {
-        reset()
-        scope = CoroutineScope(CoroutineExceptionHandler { _, e -> Timber.e(e) })
 
-        scope?.launch {
+    override fun init() {
+        scope = CoroutineScope(CoroutineExceptionHandler { _, e -> Timber.e(e) })
+        scope?.launch(Dispatchers.IO) {
             usbBroadcastReceiver.deviceConnectivityState().collect {
                 println(">>> connected: $it")
+                if (it) discoverDevice()
             }
 
 
@@ -47,9 +43,14 @@ class MainRepositoryImpl @Inject constructor(
     private fun discoverDevice(): Boolean {
 
         val devCount = d2xxManager.createDeviceInfoList(app)
+        println(">>> count: " + devCount)
 
         val deviceList = arrayOfNulls<FtDeviceInfoListNode>(devCount)
         d2xxManager.getDeviceInfoList(devCount, deviceList)
+
+        deviceList.forEach {
+            println(">>> it: " + it)
+        }
         return devCount > 0
 
     }

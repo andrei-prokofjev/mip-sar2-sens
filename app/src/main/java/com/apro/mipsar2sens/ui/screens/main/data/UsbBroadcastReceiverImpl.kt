@@ -16,30 +16,25 @@ class UsbBroadcastReceiverImpl @Inject constructor(
     val app: Application
 ) : UsbBroadcastReceiver {
 
-    private val _state = MutableStateFlow(false)
+    private val _deviceState = MutableStateFlow(false)
 
     private var scope: CoroutineScope? = null
 
-    override fun deviceConnectivityState() = _state.asStateFlow()
+    override fun deviceConnectivityState() = _deviceState.asStateFlow()
+    override fun init() {
+
+    }
 
 
     private val broadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             scope?.launch(Dispatchers.IO) {
-                when (intent.action) {
-                    UsbManager.ACTION_USB_DEVICE_ATTACHED -> {
-                        _state.emit(true)
-                    }
-                    UsbManager.ACTION_USB_ACCESSORY_DETACHED -> {
-                        _state.emit(false)
-                    }
-                }
+                _deviceState.emit(intent.action == UsbManager.ACTION_USB_DEVICE_ATTACHED)
             }
         }
     }
 
     init {
-        reset()
         scope = CoroutineScope(CoroutineExceptionHandler { _, e -> Timber.e(e) })
 
         val filter = IntentFilter()
@@ -50,6 +45,7 @@ class UsbBroadcastReceiverImpl @Inject constructor(
 
 
     override fun reset() {
+        println(">>> unregister")
         app.unregisterReceiver(broadcastReceiver)
         scope?.cancel()
         scope = null
