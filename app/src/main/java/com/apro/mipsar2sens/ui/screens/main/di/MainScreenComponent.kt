@@ -1,5 +1,6 @@
 package com.apro.mipsar2sens.ui.screens.main.di
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import com.apro.mipsar2sens.DI
 import com.apro.mipsar2sens.di.ViewModelFactory
@@ -10,6 +11,8 @@ import com.apro.mipsar2sens.ui.screens.main.business.MainInteractor
 import com.apro.mipsar2sens.ui.screens.main.business.MainInteractorImpl
 import com.apro.mipsar2sens.ui.screens.main.data.MainRepository
 import com.apro.mipsar2sens.ui.screens.main.data.MainRepositoryImpl
+import com.apro.mipsar2sens.ui.screens.main.data.UsbBroadcastReceiver
+import com.ftdi.j2xx.D2xxManager
 import dagger.Binds
 import dagger.BindsInstance
 import dagger.Component
@@ -24,7 +27,16 @@ interface MainScreenComponent {
     @Component.Builder
     interface Builder {
         @BindsInstance
+        fun app(app: Application): Builder
+
+        @BindsInstance
         fun appRouter(router: AppRouter): Builder
+
+        @BindsInstance
+        fun usbBroadcastReceiver(usbBroadcastReceiver: UsbBroadcastReceiver): Builder
+
+        @BindsInstance
+        fun deviceManager(d2xxManager: D2xxManager): Builder
 
 
         fun build(): MainScreenComponent
@@ -33,7 +45,10 @@ interface MainScreenComponent {
     companion object {
         fun create() = with(DI.appComponent) {
             DaggerMainScreenComponent.builder()
+                .app(app())
                 .appRouter(appRouter())
+                .usbBroadcastReceiver(usbBroadcastReceiver())
+                .deviceManager(d2xxManager())
                 .build()
         }
     }

@@ -1,5 +1,7 @@
 package com.apro.mipsar2sens.ui.screens.main.data
 
+import kotlinx.coroutines.flow.StateFlow
+
 interface MainRepository {
 
     fun init()
@@ -8,4 +10,5 @@ interface MainRepository {
     fun reset()
 
 
+    fun appStateFlow(): StateFlow<AppState>
 }

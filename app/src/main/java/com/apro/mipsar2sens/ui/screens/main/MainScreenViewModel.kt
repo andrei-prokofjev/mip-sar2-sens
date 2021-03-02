@@ -5,14 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.apro.core.ui.BaseViewModel
 import com.apro.mipsar2sens.navigation.AppRouter
 import com.apro.mipsar2sens.ui.screens.main.business.MainInteractor
+import com.apro.mipsar2sens.ui.screens.main.data.UsbBroadcastReceiver
 import com.ftdi.j2xx.FT_Device
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MainScreenViewModel @Inject constructor(
     private val appRouter: AppRouter,
-    private val mainInteractor: MainInteractor
+    private val mainInteractor: MainInteractor,
+
 
 ) : BaseViewModel() {
 
@@ -25,7 +28,9 @@ class MainScreenViewModel @Inject constructor(
     init {
         mainInteractor.init()
         viewModelScope.launch(Dispatchers.IO + exceptionHandler) {
+           // usbBroadcastReceiver.deviceConnectivityState().collect {
 
+            //}
         }
 
 
@@ -47,12 +52,11 @@ class MainScreenViewModel @Inject constructor(
     }
 
 
-    suspend  fun sendVersionCmd() {
+    fun sendVersionCmd() {
         //Send newline to clear command buf on pico, in case there was invalid data in it
         writeToDevice("\n")
 
         writeToDevice(CMD_VERSION_STRING)
-
     }
 
 
