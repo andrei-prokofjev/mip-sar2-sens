@@ -14,6 +14,7 @@ buildscript {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
 
     }
+
 }
 
 allprojects {
@@ -22,3 +23,6 @@ allprojects {
         jcenter()
     }
 }
+
+
+
